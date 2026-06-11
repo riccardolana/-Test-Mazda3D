@@ -1,4 +1,11 @@
-import type { PaintId, ViewName, DoorKey } from "./store";
+import type {
+  EnvironmentId,
+  InteriorColorId,
+  InteriorMaterial,
+  PaintId,
+  ViewName,
+  DoorKey,
+} from "./store";
 
 export interface Paint {
   name: string;
@@ -43,3 +50,23 @@ export const VIEW_LABELS: Record<ViewName, string> = {
   interior: "Interior",
   trunk: "Trunk",
 };
+
+export const INTERIOR_COLORS: Record<InteriorColorId, { name: string; hex: string; sheen: string }> = {
+  obsidian: { name: "Obsidian Black", hex: "#1a191c", sheen: "#4d4c52" },
+  tan: { name: "Saddle Tan", hex: "#8a5a37", sheen: "#c08a5c" },
+  greige: { name: "Stone Greige", hex: "#a89e8e", sheen: "#d6cdbf" },
+};
+export const INTERIOR_COLOR_IDS = Object.keys(INTERIOR_COLORS) as InteriorColorId[];
+
+export const INTERIOR_MATERIALS: Record<InteriorMaterial, { name: string }> = {
+  leather: { name: "Nappa Leather" },
+  cloth: { name: "Urban Cloth" },
+};
+
+export const ENVIRONMENTS: Record<EnvironmentId, { name: string; blurb: string }> = {
+  studio: { name: "Studio", blurb: "Back in the studio" },
+  mountain: { name: "Mountain trail", blurb: "Up where the trails start" },
+  city: { name: "City streets", blurb: "Right at home in the city" },
+  coast: { name: "Coastal road", blurb: "Out along the coast" },
+};
+export const ENVIRONMENT_IDS = Object.keys(ENVIRONMENTS) as EnvironmentId[];
