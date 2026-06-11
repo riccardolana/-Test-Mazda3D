@@ -116,9 +116,11 @@ export default function CarModel() {
       if (p.roll) {
         tmpVec.copy(p.group.position).sub(p.home);
         const travel = tmpVec.dot(p.roll.localTravelDir);
+        // travel is parent-local (mm-scale); driveDist is scene metres —
+        // each needs its own radius or the drive spin is invisibly slow.
         p.group.quaternion.setFromAxisAngle(
           p.roll.localAxis,
-          -(travel + driveDist.current) / p.roll.radiusLocal,
+          -(travel / p.roll.radiusLocal + driveDist.current / p.roll.radiusScene),
         );
       }
     });

@@ -16,6 +16,13 @@ export default function CameraRig() {
   const driving = useStore((s) => s.config.driving);
   const started = useStore((s) => s.started);
   const lastInteract = useRef(0);
+  // drive-mode auto-orbit: armed each time drive mode starts, disarmed by
+  // any user control input (same event the idle turntable listens to)
+  const driveOrbit = useRef(false);
+
+  useEffect(() => {
+    driveOrbit.current = driving;
+  }, [driving]);
 
   // keep panning within the studio
   useEffect(() => {
@@ -81,6 +88,11 @@ export default function CameraRig() {
         !s.bookingOpen);
     if (turntable) c.azimuthAngle += delta * 0.07;
 
+    // while driving, slowly pan around the moving car until the user takes over
+    if (s.config.driving && s.started && driveOrbit.current && !s.bookingOpen) {
+      c.azimuthAngle += delta * 0.12;
+    }
+
     // wider lens inside the cabin
     const cam = c.camera as THREE.PerspectiveCamera;
     const targetFov = s.config.view === "interior" ? 54 : 38;
@@ -96,7 +108,10 @@ export default function CameraRig() {
       makeDefault
       smoothTime={0.55}
       maxPolarAngle={1.52}
-      onStart={() => (lastInteract.current = performance.now())}
+      onStart={() => {
+        lastInteract.current = performance.now();
+        driveOrbit.current = false; // user takes over — stop the drive orbit
+      }}
     />
   );
 }

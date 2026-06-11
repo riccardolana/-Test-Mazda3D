@@ -50,6 +50,10 @@ export interface PartRig {
     localAxis: THREE.Vector3;      // spin axis, parent-local
     localTravelDir: THREE.Vector3; // travel direction, parent-local
     radiusLocal: number;           // wheel radius in parent-local units
+    /** wheel radius in normalized scene units — drive distance is measured
+     *  in scene units, so dividing by radiusLocal (mm-scale!) makes the
+     *  spin ~1000× too slow (the unit trap, again). */
+    radiusScene: number;
   };
 }
 
@@ -268,6 +272,7 @@ export function rigCar(scene: THREE.Group): CarRig {
         localAxis: dirToLocal(g.parent!, latDir),
         localTravelDir: dirToLocal(g.parent!, frontDir),
         radiusLocal: radiusWorld / parentScale,
+        radiusScene: radiusWorld * (NORMALIZED_LENGTH / size[lengthAxis]),
       },
     });
   });
