@@ -50,13 +50,13 @@
 
 - [x] **Step 1: Create the v2 branch** — DONE (branch `v2` exists; make sure you're on it: `git checkout v2`)
 
-- [ ] **Step 2: Install vitest**
+- [x] **Step 2: Install vitest**
 
 ```bash
 npm install -D vitest
 ```
 
-- [ ] **Step 3: Add the test script to `package.json`**
+- [x] **Step 3: Add the test script to `package.json`**
 
 In the `"scripts"` block add:
 
@@ -77,12 +77,12 @@ so it reads:
 
 No vitest config file is needed — tests are pure TS in node env, which is vitest's default.
 
-- [ ] **Step 4: Verify the runner works**
+- [x] **Step 4: Verify the runner works**
 
 Run: `npm test`
 Expected: `No test files found` exit message (non-zero exit is fine at this point).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add package.json package-lock.json
@@ -184,7 +184,7 @@ git commit -m "feat: add CC0 ground and fabric textures (ambientCG)"
 - Modify: `src/state/store.ts`
 - Test: `src/state/store.test.ts`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `src/state/store.test.ts`:
 
@@ -217,12 +217,12 @@ describe("store v2 config", () => {
 });
 ```
 
-- [ ] **Step 2: Run it to verify failure**
+- [x] **Step 2: Run it to verify failure**
 
 Run: `npm test -- store`
 Expected: FAIL — `interior` undefined / `setGuide` not a function.
 
-- [ ] **Step 3: Implement the store changes**
+- [x] **Step 3: Implement the store changes**
 
 In `src/state/store.ts`, add the new types after the existing type lines (after `export type DoorKey = ...`):
 
@@ -341,12 +341,12 @@ Add the action implementation next to `setCapture`:
   setGuide: (stage, line) => set({ guideStage: stage, agentLine: line }),
 ```
 
-- [ ] **Step 4: Run the tests and type-check**
+- [x] **Step 4: Run the tests and type-check**
 
 Run: `npm test -- store && npx tsc --noEmit`
 Expected: 3 tests PASS; tsc clean (nothing else references the new fields yet).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/state/store.ts src/state/store.test.ts
@@ -362,7 +362,7 @@ git commit -m "feat: CarConfig v2 — interior, environment, driving, guide stat
 
 No test — pure data. Type-check is the gate.
 
-- [ ] **Step 1: Add the data**
+- [x] **Step 1: Add the data**
 
 In `src/state/palette.ts`, change the first import line to:
 
@@ -401,12 +401,12 @@ export const ENVIRONMENTS: Record<EnvironmentId, { name: string; blurb: string }
 export const ENVIRONMENT_IDS = Object.keys(ENVIRONMENTS) as EnvironmentId[];
 ```
 
-- [ ] **Step 2: Type-check**
+- [x] **Step 2: Type-check**
 
 Run: `npx tsc --noEmit`
 Expected: clean.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/state/palette.ts
@@ -421,7 +421,7 @@ git commit -m "feat: palette metadata for interiors and environments"
 - Modify: `src/agent/parseCommand.ts`
 - Test: `src/agent/parseCommand.test.ts`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `src/agent/parseCommand.test.ts`:
 
@@ -474,12 +474,12 @@ describe("parseCommand v2", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `npm test -- parseCommand`
 Expected: v1 test passes, all v2 tests FAIL.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `src/agent/parseCommand.ts`:
 
@@ -580,12 +580,12 @@ After the doors section (after the `open everything` block) and **before** the c
 
 Leave the existing colour and view sections untouched below — interior colour words were consumed, so "tan interior" can no longer trigger `zirconSand`.
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `npm test -- parseCommand && npx tsc --noEmit`
 Expected: all PASS, tsc clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/agent/parseCommand.ts src/agent/parseCommand.test.ts
@@ -602,7 +602,7 @@ git commit -m "feat: parse environments, interior material/colour, drive actions
 
 `stepGuide(stage, text)` is pure (no store access) so it's fully unit-testable; `startGuide`/`answerGuided` are thin store adapters.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `src/agent/guide.test.ts`:
 
@@ -668,12 +668,12 @@ describe("guided build state machine", () => {
 });
 ```
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `npm test -- guide`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Implement `src/agent/guide.ts`**
+- [x] **Step 3: Implement `src/agent/guide.ts`**
 
 ```ts
 import type {
@@ -880,12 +880,12 @@ export function answerGuided(text: string): boolean {
 }
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `npm test -- guide && npx tsc --noEmit`
 Expected: all PASS, tsc clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/agent/guide.ts src/agent/guide.test.ts
@@ -900,7 +900,7 @@ git commit -m "feat: guided build state machine (vibe → interior → lifestyle
 - Create: `src/agent/voice.ts`
 - Modify: `src/agent/agentBridge.ts`
 
-- [ ] **Step 1: Create `src/agent/voice.ts`**
+- [x] **Step 1: Create `src/agent/voice.ts`**
 
 ```ts
 /* Speech synthesis for the agent's lines. Browser-only, no backend.   */
@@ -929,7 +929,7 @@ export function isVoiceMuted() {
 }
 ```
 
-- [ ] **Step 2: Update `src/agent/agentBridge.ts`**
+- [x] **Step 2: Update `src/agent/agentBridge.ts`**
 
 Replace the whole file with:
 
@@ -989,12 +989,12 @@ if (typeof window !== "undefined") {
 }
 ```
 
-- [ ] **Step 3: Type-check and run all tests**
+- [x] **Step 3: Type-check and run all tests**
 
 Run: `npx tsc --noEmit && npm test`
 Expected: clean, all tests pass.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/agent/voice.ts src/agent/agentBridge.ts
@@ -1012,7 +1012,7 @@ The GLB (verified via `gltf-transform inspect`) has interior leather materials `
 
 No unit test (needs WebGL + the GLB) — gates are `tsc` and the Task 13 browser verification.
 
-- [ ] **Step 1: Extend the `CarRig` interface**
+- [x] **Step 1: Extend the `CarRig` interface**
 
 In `src/scene/rigCar.ts`, change `CarRig`:
 
@@ -1029,7 +1029,7 @@ export interface CarRig {
 }
 ```
 
-- [ ] **Step 2: Build cabin materials in the traverse**
+- [x] **Step 2: Build cabin materials in the traverse**
 
 In `rigCar()`, just before the `scene.traverse((o) => {` paint block, add:
 
@@ -1061,16 +1061,16 @@ Inside the existing `swap` function, after the `if (m.name === "CarPaint") retur
       }
 ```
 
-- [ ] **Step 3: Expose it on the rig**
+- [x] **Step 3: Expose it on the rig**
 
 In the `const rig: CarRig = {` literal, add `cabinMats,` after `paint,`.
 
-- [ ] **Step 4: Type-check**
+- [x] **Step 4: Type-check**
 
 Run: `npx tsc --noEmit`
 Expected: clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/scene/rigCar.ts
@@ -1084,7 +1084,7 @@ git commit -m "feat: discover interior leather materials as live cabin materials
 **Files:**
 - Modify: `src/scene/CarModel.tsx`
 
-- [ ] **Step 1: Implement**
+- [x] **Step 1: Implement**
 
 Replace `src/scene/CarModel.tsx` with:
 
@@ -1202,12 +1202,12 @@ Notes for the implementer:
 - The wheel-spin sign reuses the assembly roll convention (`-travel / radius`); adding `driveDist` keeps assembly behaviour identical when `driveDist === 0`. If wheels visibly spin backwards while driving in browser verification, flip to `+driveDist.current` inside the parenthesis — judge it on the chase view.
 - `rotation-y` on the group is the wrapper yaw; we only animate `rotation.x` (pitch) and `position.y`, which don't conflict with it.
 
-- [ ] **Step 2: Type-check**
+- [x] **Step 2: Type-check**
 
 Run: `npx tsc --noEmit`
 Expected: clean.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/scene/CarModel.tsx
@@ -1222,7 +1222,7 @@ git commit -m "feat: cabin material animation and drive-mode wheel spin + body b
 - Create: `src/scene/EnvironmentStage.tsx`
 - Modify: `src/scene/Experience.tsx`
 
-- [ ] **Step 1: Create `src/scene/EnvironmentStage.tsx`**
+- [x] **Step 1: Create `src/scene/EnvironmentStage.tsx`**
 
 ```tsx
 import { Suspense, useMemo } from "react";
@@ -1346,7 +1346,7 @@ export default function EnvironmentStage() {
 }
 ```
 
-- [ ] **Step 2: Slim down `src/scene/Experience.tsx`**
+- [x] **Step 2: Slim down `src/scene/Experience.tsx`**
 
 Replace the file with:
 
@@ -1404,12 +1404,12 @@ export default function Experience() {
 
 (Camera `far` raised 120 → 250 so the big ground plane and HDRI horizon don't clip.)
 
-- [ ] **Step 3: Type-check**
+- [x] **Step 3: Type-check**
 
 Run: `npx tsc --noEmit`
 Expected: clean.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/scene/EnvironmentStage.tsx src/scene/Experience.tsx
@@ -1423,7 +1423,7 @@ git commit -m "feat: lifestyle environments — HDRI locations with drive-mode g
 **Files:**
 - Modify: `src/scene/CameraRig.tsx`
 
-- [ ] **Step 1: Implement**
+- [x] **Step 1: Implement**
 
 Three changes in `src/scene/CameraRig.tsx`:
 
@@ -1481,12 +1481,12 @@ c) In the `useFrame` turntable condition, exclude driving:
         !s.bookingOpen);
 ```
 
-- [ ] **Step 2: Type-check**
+- [x] **Step 2: Type-check**
 
 Run: `npx tsc --noEmit`
 Expected: clean.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add src/scene/CameraRig.tsx
@@ -1501,7 +1501,7 @@ git commit -m "feat: chase camera preset while driving"
 - Modify: `src/ui/AgentPanel.tsx`
 - Modify: `src/styles.css`
 
-- [ ] **Step 1: Rewrite `src/ui/AgentPanel.tsx`**
+- [x] **Step 1: Rewrite `src/ui/AgentPanel.tsx`**
 
 ```tsx
 import { useEffect, useRef, useState } from "react";
@@ -1772,7 +1772,7 @@ export default function AgentPanel() {
 }
 ```
 
-- [ ] **Step 2: Add styles to `src/styles.css`**
+- [x] **Step 2: Add styles to `src/styles.css`**
 
 Append at the end of the file:
 
@@ -1826,12 +1826,12 @@ Append at the end of the file:
 
 (If `.panel`, `.chip`, `.swatch` base styles use different selector names in `styles.css`, match the existing names — these rules only add new classes.)
 
-- [ ] **Step 3: Type-check + full test run**
+- [x] **Step 3: Type-check + full test run**
 
 Run: `npx tsc --noEmit && npm test`
 Expected: clean, all tests pass.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/ui/AgentPanel.tsx src/styles.css
