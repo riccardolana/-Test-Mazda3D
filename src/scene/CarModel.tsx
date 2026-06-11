@@ -42,12 +42,22 @@ export default function CarModel() {
     tmpColor.set(PAINTS[config.color].hex);
     easing.dampC(rig.paint.color, tmpColor, 0.25, delta);
 
-    // 2. cabin — tint + leather/cloth surface response
+    // 2. cabin — tint + leather/cloth surface response. The factory
+    // colourway (obsidian leather) keeps the GLB's own baked maps; other
+    // colourways drop the map and tint flat (normals + AO carry the depth).
     const cloth = config.interior.material === "cloth";
-    tmpColor.set(INTERIOR_COLORS[config.interior.color].hex);
+    const factory = !cloth && config.interior.color === "obsidian";
+    tmpColor.set(factory ? "#ffffff" : INTERIOR_COLORS[config.interior.color].hex);
     rig.cabinMats.forEach((m) => {
       easing.dampC(m.color, tmpColor, 0.25, delta);
-      easing.damp(m, "roughness", cloth ? 0.92 : 0.5, 0.25, delta);
+      easing.damp(m, "roughness", cloth ? 0.92 : 0.55, 0.25, delta);
+      easing.damp(m, "clearcoat", cloth ? 0 : 0.12, 0.25, delta);
+      m.clearcoatRoughness = 0.7;
+      const wantMap = factory ? ((m.userData.srcMap as THREE.Texture | null) ?? null) : null;
+      if (m.map !== wantMap) {
+        m.map = wantMap;
+        m.needsUpdate = true;
+      }
       const wantNormal = cloth
         ? fabricNormal
         : ((m.userData.leatherNormal as THREE.Texture | null) ?? null);
