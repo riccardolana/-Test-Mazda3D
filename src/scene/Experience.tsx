@@ -2,7 +2,14 @@ import { Suspense } from "react";
 import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
-import { EffectComposer, N8AO, Bloom, Vignette } from "@react-three/postprocessing";
+import {
+  EffectComposer,
+  N8AO,
+  Bloom,
+  ToneMapping,
+  Vignette,
+} from "@react-three/postprocessing";
+import { ToneMappingMode } from "postprocessing";
 import CarModel from "./CarModel";
 import CameraRig from "./CameraRig";
 import EnvironmentStage from "./EnvironmentStage";
@@ -11,6 +18,11 @@ import { useStore } from "../state/store";
 /** Full-bleed 3D studio. Everything inside reacts only to CarConfig. */
 export default function Experience() {
   const setCapture = useStore((s) => s.setCapture);
+  // Per-environment tone mapping: V1's ACESFilmic look in the studio,
+  // Khronos Neutral in the HDRI locations. The EffectComposer forces the
+  // renderer to NoToneMapping, so this MUST be a composer effect — setting
+  // gl.toneMapping does nothing while the composer is mounted.
+  const environment = useStore((s) => s.config.environment);
 
   return (
     <Canvas
@@ -20,7 +32,6 @@ export default function Experience() {
       gl={{
         antialias: false,
         preserveDrawingBuffer: true,
-        toneMapping: THREE.NeutralToneMapping,
         toneMappingExposure: 1.0,
       }}
       onCreated={(state) => {
@@ -69,6 +80,13 @@ export default function Experience() {
       <EffectComposer multisampling={4}>
         <N8AO aoRadius={0.35} intensity={2.5} distanceFalloff={1} quality="medium" halfRes />
         <Bloom mipmapBlur intensity={0.12} luminanceThreshold={1.1} />
+        <ToneMapping
+          mode={
+            environment === "studio"
+              ? ToneMappingMode.ACES_FILMIC
+              : ToneMappingMode.NEUTRAL
+          }
+        />
         <Vignette eskil={false} offset={0.18} darkness={0.5} />
       </EffectComposer>
     </Canvas>
