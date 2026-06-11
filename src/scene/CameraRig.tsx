@@ -13,6 +13,7 @@ export default function CameraRig() {
   const rig = useMemo(() => rigCar(scene as unknown as THREE.Group), [scene]);
   const controls = useRef<CameraControls>(null);
   const view = useStore((s) => s.config.view);
+  const driving = useStore((s) => s.config.driving);
   const started = useStore((s) => s.started);
   const lastInteract = useRef(0);
 
@@ -34,6 +35,13 @@ export default function CameraRig() {
       return;
     }
     const apply = (animate: boolean) => {
+      if (driving) {
+        // rear-quarter chase shot: car front faces +Z, so sit behind/left
+        c.minDistance = 2.4;
+        c.maxDistance = 20;
+        c.setLookAt(3.4, 1.4, -5.8, 0, 0.8, 1.4, animate);
+        return;
+      }
       c.minDistance = view === "interior" ? 0.05 : view === "wheels" ? 1.2 : 2.4;
       c.maxDistance = 16;
       const p = rig.presets[view];
@@ -57,7 +65,7 @@ export default function CameraRig() {
     const onResize = () => apply(false);
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, [view, rig, started]);
+  }, [view, rig, started, driving]);
 
   useFrame((_, delta) => {
     const c = controls.current;
@@ -66,7 +74,11 @@ export default function CameraRig() {
     const idle = performance.now() - lastInteract.current > 6000;
     const turntable =
       s.assembling ||
-      (idle && s.started && s.config.view === "exterior" && !s.bookingOpen);
+      (idle &&
+        s.started &&
+        s.config.view === "exterior" &&
+        !s.config.driving &&
+        !s.bookingOpen);
     if (turntable) c.azimuthAngle += delta * 0.07;
 
     // wider lens inside the cabin
