@@ -29,12 +29,13 @@ export const STAGES: Record<Exclude<GuideStage, "done">, StageSpec> = {
     chips: ["Bold & sporty", "Sleek & elegant", "Calm & minimal", "Deep & serene"],
   },
   material: {
-    prompt: "Now step inside — would you rather have leather, or a softer cloth?",
-    chips: ["Nappa leather", "Urban cloth"],
+    prompt:
+      "Now step inside — Nappa leather, classic leather, leatherette with microsuede, or a softer cloth?",
+    chips: ["Nappa leather", "Leather", "Leatherette + microsuede", "Urban cloth"],
   },
   cabinColor: {
     prompt: "And the cabin colour?",
-    chips: ["Classic black", "Warm tan", "Light greige"],
+    chips: ["Classic black", "Sports tan", "Cognac brown", "Light parchment"],
   },
   lifestyle: {
     prompt:
@@ -57,14 +58,17 @@ const VIBE_MAP: [RegExp, PaintId][] = [
 ];
 
 const MATERIAL_MAP: [RegExp, InteriorMaterial][] = [
-  [/\b(leather|nappa|premium)\b/, "leather"],
+  [/\b(nappa|premium)\b/, "nappa"],
+  [/\b(leatherette|micro.?suede|suede|synthetic|vegan)\b/, "leatherette"],
+  [/\b(leather|classic)\b/, "leather"],
   [/\b(cloth|fabric|soft(er)?|textile|woven|eco)\b/, "cloth"],
 ];
 
 const CABIN_COLOR_MAP: [RegExp, InteriorColorId][] = [
   [/\b(black|charcoal|obsidian|dark)\b/, "obsidian"],
-  [/\b(tan|saddle|brown|cognac|caramel|warm)\b/, "tan"],
-  [/\b(greige|grey|gray|stone|beige|cream|light)\b/, "greige"],
+  [/\b(cognac|brown|caramel|chestnut)\b/, "cognac"],
+  [/\b(tan|saddle|sports?|warm)\b/, "tan"],
+  [/\b(greige|grey|gray|stone|beige|cream|parchment|light)\b/, "greige"],
 ];
 
 const LIFESTYLE_MAP: [RegExp, EnvironmentId][] = [
@@ -120,7 +124,7 @@ export function stepGuide(stage: Exclude<GuideStage, "done">, text: string): Gui
     }
     case "material": {
       const material = pick(MATERIAL_MAP, s, "leather");
-      if (!material) return stay("material", "Leather or cloth?");
+      if (!material) return stay("material", "Nappa, leather, leatherette or cloth?");
       return {
         patch: { interior: { material }, view: "interior" },
         reply: `${INTERIOR_MATERIALS[material].name}, nice. Have a look inside. ${STAGES.cabinColor.prompt}`,
@@ -132,7 +136,7 @@ export function stepGuide(stage: Exclude<GuideStage, "done">, text: string): Gui
     }
     case "cabinColor": {
       const color = pick(CABIN_COLOR_MAP, s, "obsidian");
-      if (!color) return stay("cabinColor", "Black, tan or greige?");
+      if (!color) return stay("cabinColor", "Black, tan, cognac or parchment?");
       return {
         patch: { interior: { color } },
         reply: `${INTERIOR_COLORS[color].name} it is. ${STAGES.lifestyle.prompt}`,

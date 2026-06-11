@@ -24,6 +24,12 @@ export default function CarModel() {
     fabricNormal.repeat.set(4, 4);
   }, [fabricNormal]);
 
+  const suedeNormal = useTexture("/textures/suede_normal.jpg");
+  useMemo(() => {
+    suedeNormal.wrapS = suedeNormal.wrapT = THREE.RepeatWrapping;
+    suedeNormal.repeat.set(6, 6);
+  }, [suedeNormal]);
+
   // Place parts according to the current assembly step on mount so a
   // reload doesn't replay the fly-in.
   useMemo(() => {
@@ -42,16 +48,22 @@ export default function CarModel() {
     tmpColor.set(PAINTS[config.color].hex);
     easing.dampC(rig.paint.color, tmpColor, 0.25, delta);
 
-    // 2. cabin — tint + leather/cloth surface response. The factory
-    // colourway (obsidian leather) keeps the GLB's own baked maps; other
+    // 2. cabin — per-material surface recipe. The factory colourway
+    // (obsidian leather/nappa) keeps the GLB's own baked maps; other
     // colourways drop the map and tint flat (normals + AO carry the depth).
-    const cloth = config.interior.material === "cloth";
-    const factory = !cloth && config.interior.color === "obsidian";
+    const material = config.interior.material;
+    const cloth = material === "cloth";
+    const leatherette = material === "leatherette";
+    const nappa = material === "nappa";
+    const factory =
+      (material === "leather" || nappa) && config.interior.color === "obsidian";
+    const roughness = cloth ? 0.92 : leatherette ? 0.7 : nappa ? 0.45 : 0.55;
+    const clearcoat = cloth ? 0 : leatherette ? 0.04 : nappa ? 0.18 : 0.12;
     tmpColor.set(factory ? "#ffffff" : INTERIOR_COLORS[config.interior.color].hex);
     rig.cabinMats.forEach((m) => {
       easing.dampC(m.color, tmpColor, 0.25, delta);
-      easing.damp(m, "roughness", cloth ? 0.92 : 0.55, 0.25, delta);
-      easing.damp(m, "clearcoat", cloth ? 0 : 0.12, 0.25, delta);
+      easing.damp(m, "roughness", roughness, 0.25, delta);
+      easing.damp(m, "clearcoat", clearcoat, 0.25, delta);
       m.clearcoatRoughness = 0.7;
       const wantMap = factory ? ((m.userData.srcMap as THREE.Texture | null) ?? null) : null;
       if (m.map !== wantMap) {
@@ -60,13 +72,24 @@ export default function CarModel() {
       }
       const wantNormal = cloth
         ? fabricNormal
-        : ((m.userData.leatherNormal as THREE.Texture | null) ?? null);
+        : leatherette
+          ? suedeNormal
+          : ((m.userData.leatherNormal as THREE.Texture | null) ?? null);
       if (m.normalMap !== wantNormal) {
         m.normalMap = wantNormal;
         m.needsUpdate = true;
       }
-      m.sheen = cloth ? 0.5 : 0;
-      if (cloth) m.sheenColor.set("#ffffff");
+      // nappa = smoother premium grain: halve the source normal intensity
+      const srcScale = m.userData.srcNormalScale as THREE.Vector2 | undefined;
+      if (srcScale && !cloth && !leatherette) {
+        const k = nappa ? 0.5 : 1;
+        easing.damp(m.normalScale, "x", srcScale.x * k, 0.25, delta);
+        easing.damp(m.normalScale, "y", srcScale.y * k, 0.25, delta);
+      } else {
+        m.normalScale.set(1, 1);
+      }
+      m.sheen = cloth ? 0.5 : leatherette ? 0.2 : 0;
+      if (m.sheen > 0) m.sheenColor.set("#ffffff");
     });
 
     // 3. doors / tailgate — eased hinge rotation around parent-local axes

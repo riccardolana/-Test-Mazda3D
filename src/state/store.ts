@@ -10,8 +10,10 @@ export type ViewName = "exterior" | "interior" | "trunk" | "front" | "rear" | "w
 export type PaintId = "soulRed" | "machineGrey" | "snowWhite" | "crystalBlue" | "jetBlack" | "zirconSand";
 export type DoorKey = "frontLeft" | "frontRight" | "rearLeft" | "rearRight" | "trunk";
 
-export type InteriorMaterial = "leather" | "cloth";
-export type InteriorColorId = "obsidian" | "tan" | "greige";
+/** the real 2026 CX-5 upholstery lineup: cloth (base), leatherette with
+ *  microsuede inserts (S Select), leather (S Premium), Nappa (top trims) */
+export type InteriorMaterial = "cloth" | "leatherette" | "leather" | "nappa";
+export type InteriorColorId = "obsidian" | "tan" | "cognac" | "greige";
 export type EnvironmentId = "studio" | "mountain" | "city" | "coast";
 export type GuideStage = "vibe" | "material" | "cabinColor" | "lifestyle" | "reveal" | "done";
 

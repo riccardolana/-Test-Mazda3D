@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ASSEMBLY_DONE, useStore } from "../state/store";
+import type { InteriorMaterial } from "../state/store";
 import {
   DOORS,
   ENVIRONMENTS,
@@ -141,7 +142,7 @@ export default function AgentPanel() {
 
           {/* interior material + colour */}
           <div className="panel-row chips">
-            {(Object.keys(INTERIOR_MATERIALS) as ("leather" | "cloth")[]).map((mId) => (
+            {(Object.keys(INTERIOR_MATERIALS) as InteriorMaterial[]).map((mId) => (
               <button
                 key={mId}
                 aria-pressed={config.interior.material === mId}

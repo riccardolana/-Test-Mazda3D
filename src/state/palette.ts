@@ -53,13 +53,16 @@ export const VIEW_LABELS: Record<ViewName, string> = {
 
 export const INTERIOR_COLORS: Record<InteriorColorId, { name: string; hex: string; sheen: string }> = {
   obsidian: { name: "Obsidian Black", hex: "#1a191c", sheen: "#4d4c52" },
-  tan: { name: "Saddle Tan", hex: "#8a5a37", sheen: "#c08a5c" },
-  greige: { name: "Stone Greige", hex: "#a89e8e", sheen: "#d6cdbf" },
+  tan: { name: "Sports Tan", hex: "#8a5a37", sheen: "#c08a5c" },
+  cognac: { name: "Cognac Brown", hex: "#6e4430", sheen: "#9c6a4a" },
+  greige: { name: "Parchment", hex: "#cfc6b8", sheen: "#ece5d8" },
 };
 export const INTERIOR_COLOR_IDS = Object.keys(INTERIOR_COLORS) as InteriorColorId[];
 
 export const INTERIOR_MATERIALS: Record<InteriorMaterial, { name: string }> = {
-  leather: { name: "Nappa Leather" },
+  nappa: { name: "Nappa Leather" },
+  leather: { name: "Leather" },
+  leatherette: { name: "Leatherette + Microsuede" },
   cloth: { name: "Urban Cloth" },
 };
 

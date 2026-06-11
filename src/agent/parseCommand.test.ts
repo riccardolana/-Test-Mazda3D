@@ -26,6 +26,20 @@ describe("parseCommand v2", () => {
     expect(parseCommand("switch to cloth").patch.interior?.material).toBe("cloth");
   });
 
+  it("parses the four real CX-5 materials distinctly", () => {
+    expect(parseCommand("nappa leather please").patch.interior?.material).toBe("nappa");
+    expect(parseCommand("leatherette is fine").patch.interior?.material).toBe("leatherette");
+    expect(parseCommand("the microsuede one").patch.interior?.material).toBe("leatherette");
+    expect(parseCommand("just plain leather").patch.interior?.material).toBe("leather");
+  });
+
+  it("parses cognac as its own cabin colour", () => {
+    const r = parseCommand("cognac leather interior");
+    expect(r.patch.interior?.color).toBe("cognac");
+    expect(r.patch.interior?.material).toBe("leather");
+    expect(parseCommand("brown leather seats").patch.interior?.color).toBe("cognac");
+  });
+
   it("parses interior colour only with cabin context, and consumes it", () => {
     const r = parseCommand("tan leather interior please");
     expect(r.patch.interior?.color).toBe("tan");

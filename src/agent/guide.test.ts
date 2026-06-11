@@ -26,6 +26,22 @@ describe("guided build state machine", () => {
     expect(r.nextStage).toBe("lifestyle");
   });
 
+  it("material stage distinguishes the four real materials", () => {
+    expect(stepGuide("material", "Nappa leather").patch.interior).toEqual({ material: "nappa" });
+    expect(stepGuide("material", "Leatherette + microsuede").patch.interior).toEqual({
+      material: "leatherette",
+    });
+    expect(stepGuide("material", "classic leather").patch.interior).toEqual({
+      material: "leather",
+    });
+    expect(stepGuide("material", "Urban cloth").patch.interior).toEqual({ material: "cloth" });
+  });
+
+  it("cabin colour stage understands cognac and parchment", () => {
+    expect(stepGuide("cabinColor", "Cognac brown").patch.interior).toEqual({ color: "cognac" });
+    expect(stepGuide("cabinColor", "Light parchment").patch.interior).toEqual({ color: "greige" });
+  });
+
   it("lifestyle answers pick the environment and return to exterior", () => {
     const r = stepGuide("lifestyle", "we hike most weekends");
     expect(r.patch.environment).toBe("mountain");

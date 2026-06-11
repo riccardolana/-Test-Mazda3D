@@ -50,10 +50,12 @@ const ENV_WORDS: [RegExp, EnvironmentId][] = [
 
 const INTERIOR_COLOR_WORDS: [string, InteriorColorId][] = [
   ["black|charcoal|obsidian", "obsidian"],
-  ["tan|saddle|brown|cognac|caramel", "tan"],
-  ["greige|grey|gray|stone|beige|cream", "greige"],
+  ["cognac|brown|caramel|chestnut", "cognac"],
+  ["tan|saddle", "tan"],
+  ["greige|grey|gray|stone|beige|cream|parchment", "greige"],
 ];
-const CABIN_CTX = "interior|cabin|inside|seats?|upholstery|leather|cloth|fabric";
+const CABIN_CTX =
+  "interior|cabin|inside|seats?|upholstery|leather(?:ette)?|nappa|cloth|fabric|suede";
 
 const DOOR_LABELS: Record<DoorKey, string> = {
   frontLeft: "Driver door",
@@ -150,7 +152,10 @@ export function parseCommand(text: string): ParsedCommand {
 
   // --- interior ------------------------------------------------------
   const interior: ConfigPatch["interior"] = {};
-  if (/\b(leather|nappa)\b/.test(s)) interior.material = "leather";
+  if (/\b(nappa)\b/.test(s)) interior.material = "nappa";
+  else if (/\b(leatherette|micro.?suede|suede|synthetic|vegan)\b/.test(s))
+    interior.material = "leatherette";
+  else if (/\b(leather)\b/.test(s)) interior.material = "leather";
   else if (/\b(cloth|fabric|textile|woven)\b/.test(s)) interior.material = "cloth";
 
   for (const [words, id] of INTERIOR_COLOR_WORDS) {

@@ -158,6 +158,7 @@ export function rigCar(scene: THREE.Group): CarRig {
           if (src.normalScale) live.normalScale.copy(src.normalScale);
           live.userData.leatherNormal = src.normalMap ?? null;
           live.userData.srcMap = src.map ?? null;
+          live.userData.srcNormalScale = live.normalScale.clone();
           cabinCache.set(m.name, live);
           cabinMats.push(live);
         }
