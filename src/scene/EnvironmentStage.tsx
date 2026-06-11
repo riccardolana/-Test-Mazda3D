@@ -1,13 +1,13 @@
 import { Suspense, useMemo } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { Environment, Lightformer, useTexture } from "@react-three/drei";
+import { Environment, useTexture } from "@react-three/drei";
 import { DRIVE_SPEED, useStore } from "../state/store";
 import type { EnvironmentId } from "../state/store";
 
 /* ------------------------------------------------------------------ */
 /* The surroundings react ONLY to config.environment / config.driving. */
-/* Studio = the original procedural Lightformer set (offline, instant).*/
+/* Studio = dark backdrop lit by a local studio HDRI (offline-safe).   */
 /* Locations = a local HDRI backdrop + tiled ground that scrolls in    */
 /* drive mode. HDRIs live in /public/hdri — still zero network calls.  */
 /* ------------------------------------------------------------------ */
@@ -91,14 +91,9 @@ function Studio() {
     <>
       <color attach="background" args={["#0a0a0d"]} />
       <fog attach="fog" args={["#0a0a0d", 16, 40]} />
-      {/* procedural studio reflections — no external HDRI, works offline */}
-      <Environment resolution={256} frames={1}>
-        <Lightformer form="rect" intensity={5} position={[0, 7, 0]} rotation-x={Math.PI / 2} scale={[11, 11, 1]} />
-        <Lightformer form="rect" intensity={2} position={[-9, 2.4, 0]} rotation-y={Math.PI / 2} scale={[9, 2.2, 1]} />
-        <Lightformer form="rect" intensity={2} position={[9, 2.4, 0]} rotation-y={-Math.PI / 2} scale={[9, 2.2, 1]} />
-        <Lightformer form="rect" intensity={1.2} position={[0, 3, -10]} scale={[10, 2.4, 1]} />
-        <Lightformer form="rect" intensity={0.8} position={[0, 2.4, 10]} rotation-y={Math.PI} scale={[8, 2, 1]} />
-      </Environment>
+      {/* real studio HDRI for lighting/reflections only — local file, offline-safe;
+          the dark backdrop + fog stay (no `background` prop) */}
+      <Environment files="/hdri/studio_2k.hdr" environmentIntensity={0.9} />
       {/* studio floor */}
       <mesh rotation-x={-Math.PI / 2} position={[0, -0.005, 0]}>
         <circleGeometry args={[34, 64]} />

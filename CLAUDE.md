@@ -48,7 +48,7 @@ window.mazdaAgent.apply(patch) ────────────────�
 | `src/scene/rigCar.ts` | load-time discovery: orientation, door hinge pivots, wheel axles, camera presets, paint material swap, normalization wrapper |
 | `src/scene/CarModel.tsx` | per-frame animation (maath damps): paint color, door angles, assembly staged→home |
 | `src/scene/CameraRig.tsx` | drei `CameraControls`: animated presets, portrait aspect compensation, interior FOV widening, idle turntable |
-| `src/scene/Experience.tsx` | Canvas, procedural Lightformer studio (NO network HDRIs — keeps demo offline-safe), ContactShadows, dev `window.__three` handle |
+| `src/scene/Experience.tsx` | Canvas, shadows + Neutral tone mapping + N8AO/bloom/vignette composer, ContactShadows, dev `window.__three` handle. All HDRIs are LOCAL files in `public/hdri/` (no *network* HDRIs — keeps demo offline-safe) |
 | `src/ui/*` | TopBar, IntroOverlay (+assembly captions), AgentPanel, IntentToast, BookingModal |
 
 ## The GLB and its trap

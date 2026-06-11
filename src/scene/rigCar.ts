@@ -140,6 +140,8 @@ export function rigCar(scene: THREE.Group): CarRig {
   scene.traverse((o) => {
     if (!(o as THREE.Mesh).isMesh) return;
     const mesh = o as THREE.Mesh;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     const swap = (m: THREE.Material): THREE.Material => {
       if (m.name === "CarPaint") return paint;
       if (/^intLeather(Dark|Lt|PerfLt)$/.test(m.name)) {
