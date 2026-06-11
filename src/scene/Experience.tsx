@@ -15,7 +15,7 @@ export default function Experience() {
   return (
     <Canvas
       dpr={[1, 1.75]}
-      shadows
+      shadows={{ type: THREE.PCFShadowMap }}
       camera={{ position: [8.5, 3.2, 10.5], fov: 38, near: 0.05, far: 250 }}
       gl={{
         antialias: false,
