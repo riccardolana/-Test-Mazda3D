@@ -151,18 +151,20 @@ demo on top of the configurator:
   Black / Sports Tan / Cognac Brown / Parchment. Each material gets its own
   surface response (roughness, clearcoat, sheen, normal maps); the factory
   obsidian leather colourway keeps the GLB's original baked textures.
-- **Realism pass** — Khronos Neutral tone mapping, real-time shadows, HDRI
-  studio lighting, N8AO ambient occlusion + subtle bloom/vignette.
-- **Agent voice** — the guide speaks its lines via the Web Speech synthesis
-  API (mutable from the agent bubble).
+- **Realism pass** — per-environment tone mapping (filmic studio, Khronos
+  Neutral in locations), real-time shadows, N8AO ambient occlusion + subtle
+  bloom/vignette.
+- **Agent voice** — the guide speaks its lines with a warm Gemini TTS voice
+  (Web Speech fallback when offline; mutable from the agent bubble).
 
 ### Deployment access
 
-The V2 deployment (`test-mazda3d-v2.vercel.app`) sits behind HTTP Basic Auth
-via a Vercel Edge Middleware ([middleware.ts](middleware.ts)): any username,
-password `mazda3D`. The password is hardcoded in the middleware — a
-deliberate, demo-grade gate, not real security. Local `npm run dev` is
-unaffected.
+The V2 deployment (`test-mazda3d-v2.vercel.app`) shows a client-side password
+wall ([src/ui/PasswordGate.tsx](src/ui/PasswordGate.tsx)) — password `mazda3D`,
+remembered per tab via `sessionStorage`. This is a deliberate, demo-grade gate,
+not real security: the check runs in the browser and static assets (the GLB,
+HDRIs) are technically fetchable without it — the same accepted tradeoff as
+V1's public GLB.
 
 ### CC0 asset credits
 
