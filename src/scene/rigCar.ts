@@ -62,6 +62,8 @@ export interface CarRig {
   doorRigs: DoorRig[];
   partRigs: PartRig[];
   paint: THREE.MeshPhysicalMaterial;
+  /** live interior materials (seats, door cards); userData.leatherNormal holds the original grain map */
+  cabinMats: THREE.MeshPhysicalMaterial[];
   presets: Record<ViewName, CameraPreset>;
   /** wrapper transform that normalizes the car: front → +Z, floor at y=0, centered */
   wrapper: { rotationY: number; scale: number; position: [number, number, number] };
@@ -133,11 +135,31 @@ export function rigCar(scene: THREE.Group): CarRig {
     clearcoatRoughness: 0.1,
     envMapIntensity: 1.3,
   });
+  const cabinCache = new Map<string, THREE.MeshPhysicalMaterial>();
+  const cabinMats: THREE.MeshPhysicalMaterial[] = [];
   scene.traverse((o) => {
     if (!(o as THREE.Mesh).isMesh) return;
     const mesh = o as THREE.Mesh;
     const swap = (m: THREE.Material): THREE.Material => {
       if (m.name === "CarPaint") return paint;
+      if (/^intLeather(Dark|Lt|PerfLt)$/.test(m.name)) {
+        let live = cabinCache.get(m.name);
+        if (!live) {
+          const src = m as THREE.MeshStandardMaterial;
+          live = new THREE.MeshPhysicalMaterial({
+            name: `CabinLive_${m.name}`,
+            color: new THREE.Color("#1a191c"),
+            roughness: 0.5,
+            metalness: 0,
+            normalMap: src.normalMap ?? undefined,
+          });
+          if (src.normalScale) live.normalScale.copy(src.normalScale);
+          live.userData.leatherNormal = src.normalMap ?? null;
+          cabinCache.set(m.name, live);
+          cabinMats.push(live);
+        }
+        return live;
+      }
       // safety net for glass exported opaque
       const std = m as THREE.MeshStandardMaterial;
       if (/glasswind|intglassclear/i.test(m.name) && !std.transparent) {
@@ -324,6 +346,7 @@ export function rigCar(scene: THREE.Group): CarRig {
     doorRigs,
     partRigs,
     paint,
+    cabinMats,
     presets,
     wrapper: { rotationY, scale, position },
   };
