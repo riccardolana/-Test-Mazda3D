@@ -134,6 +134,49 @@ fake summary card reads today.
 - **Booking moment** — summary card with a live canvas snapshot, colour name
   and a fake slot confirmation.
 
+## V2 — guided voice build, environments & realism
+
+The `v2` branch (deployed separately, see below) layers the conversational
+demo on top of the configurator:
+
+- **Guided build** — after assembly the agent walks you through five stages
+  (exterior vibe → interior material → cabin colour → lifestyle → reveal),
+  each answer parsed into the same `ConfigPatch` objects. Suggestion chips
+  double as example utterances; free text and the mic work at every stage.
+- **Lifestyle environments** — studio, mountain trail, city streets, coastal
+  road. Local HDRI backdrops + matching ground; in drive mode the ground
+  scrolls and a chase camera kicks in.
+- **Real CX-5 interior materials** — Urban Cloth, Leatherette + Microsuede
+  (as on the real S Select trim), Leather and Nappa Leather, in Obsidian
+  Black / Sports Tan / Cognac Brown / Parchment. Each material gets its own
+  surface response (roughness, clearcoat, sheen, normal maps); the factory
+  obsidian leather colourway keeps the GLB's original baked textures.
+- **Realism pass** — Khronos Neutral tone mapping, real-time shadows, HDRI
+  studio lighting, N8AO ambient occlusion + subtle bloom/vignette.
+- **Agent voice** — the guide speaks its lines via the Web Speech synthesis
+  API (mutable from the agent bubble).
+
+### Deployment access
+
+The V2 deployment (`test-mazda3d-v2.vercel.app`) sits behind HTTP Basic Auth
+via a Vercel Edge Middleware ([middleware.ts](middleware.ts)): any username,
+password `mazda3D`. The password is hardcoded in the middleware — a
+deliberate, demo-grade gate, not real security. Local `npm run dev` is
+unaffected.
+
+### CC0 asset credits
+
+| Asset | Source |
+|---|---|
+| `hdri/mountain_2k.hdr` | [Fouriesburg Mountain Lookout](https://polyhaven.com/a/fouriesburg_mountain_lookout) — Poly Haven, CC0 |
+| `hdri/city_2k.hdr` | [Potsdamer Platz](https://polyhaven.com/a/potsdamer_platz) — Poly Haven, CC0 |
+| `hdri/coast_2k.hdr` | [Simon's Town Road](https://polyhaven.com/a/simons_town_road) — Poly Haven, CC0 |
+| `hdri/studio_2k.hdr` | [Studio Small 09](https://polyhaven.com/a/studio_small_09) — Poly Haven, CC0 |
+| `textures/gravel_*.jpg` | [Gravel023](https://ambientcg.com/view?id=Gravel023) — ambientCG, CC0 |
+| `textures/asphalt_*.jpg` | [Asphalt025C](https://ambientcg.com/view?id=Asphalt025C) — ambientCG, CC0 |
+| `textures/fabric_normal.jpg` | [Fabric030](https://ambientcg.com/view?id=Fabric030) — ambientCG, CC0 |
+| `textures/suede_normal.jpg` | [Leather039](https://ambientcg.com/view?id=Leather039) — ambientCG, CC0 |
+
 ## Project layout
 
 ```
