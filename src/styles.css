@@ -3,9 +3,11 @@
   --panel: rgba(14, 14, 18, 0.62);
   --line: rgba(255, 255, 255, 0.09);
   --text: #f4f4f6;
-  --text-dim: rgba(244, 244, 246, 0.55);
+  --text-dim: rgba(244, 244, 246, 0.62);
   --accent: #910a2d;
   --accent-bright: #c01540;
+  /* Soul Red — the agent's presence colour (matches the soulRed paint sheen) */
+  --agent: #d4494e;
   --radius: 18px;
   --font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -42,6 +44,13 @@ button {
   border: none;
   background: none;
   color: inherit;
+}
+
+/* keyboard focus is always visible; pointer clicks stay clean */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: 2px;
 }
 
 /* ---------------- top bar ---------------- */
@@ -105,6 +114,10 @@ button {
   transform: translateY(-1px);
 }
 
+.cta:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
 .cta:disabled {
   opacity: 0.35;
   cursor: default;
@@ -166,6 +179,7 @@ button {
   font-weight: 200;
   letter-spacing: 0.14em;
   line-height: 1.05;
+  text-wrap: balance;
 }
 
 .intro-title span {
@@ -180,6 +194,7 @@ button {
   line-height: 1.65;
   color: var(--text-dim);
   max-width: 420px;
+  text-wrap: pretty;
 }
 
 .intro-start {
@@ -341,6 +356,10 @@ button {
   border-color: rgba(255, 255, 255, 0.22);
 }
 
+.chip:active {
+  transform: scale(0.97);
+}
+
 .chip.active {
   color: #fff;
   background: var(--accent);
@@ -348,8 +367,8 @@ button {
 }
 
 .chip-state {
-  font-size: 10px;
-  opacity: 0.65;
+  font-size: 11px;
+  opacity: 0.8;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -364,6 +383,11 @@ button {
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 6px 6px 6px 8px;
+  transition: border-color 0.2s ease;
+}
+
+.command:focus-within {
+  border-color: rgba(255, 255, 255, 0.32);
 }
 
 .command input {
@@ -379,7 +403,7 @@ button {
 }
 
 .command input::placeholder {
-  color: rgba(244, 244, 246, 0.35);
+  color: rgba(244, 244, 246, 0.6);
   font-size: 13px;
 }
 
@@ -494,7 +518,7 @@ button {
   border-radius: 22px;
   padding: 18px;
   text-align: center;
-  animation: modalIn 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  animation: modalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   max-height: calc(100dvh - 40px);
   overflow-y: auto;
 }
@@ -524,6 +548,7 @@ button {
   font-weight: 400;
   letter-spacing: 0.1em;
   margin: 14px 0 16px;
+  text-wrap: balance;
 }
 
 .modal-snapshot {
@@ -583,7 +608,7 @@ button {
   font-size: 26px;
   color: #fff;
   background: var(--accent);
-  animation: modalIn 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4);
+  animation: modalIn 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .booked-copy {
@@ -592,6 +617,7 @@ button {
   line-height: 1.6;
   color: var(--text-dim);
   margin-bottom: 20px;
+  text-wrap: pretty;
 }
 
 /* ---------------- mobile ---------------- */
@@ -651,6 +677,7 @@ button {
 .agent-bubble p {
   margin: 0;
   flex: 1;
+  text-wrap: pretty;
 }
 .agent-dot {
   flex: none;
@@ -658,7 +685,7 @@ button {
   height: 9px;
   margin-top: 5px;
   border-radius: 50%;
-  background: #d4494e;
+  background: var(--agent);
   box-shadow: 0 0 10px rgba(212, 73, 78, 0.9);
   animation: agentPulse 2.2s ease-in-out infinite;
 }
@@ -675,5 +702,27 @@ button {
   opacity: 0.75;
 }
 .agent-bubble .mute:hover { opacity: 1; }
-.swatch.small { width: 22px; height: 22px; }
-.chip.drive.active { background: #d4494e; border-color: #d4494e; color: #fff; }
+.swatch.small {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+}
+.chip.drive.active {
+  background: var(--accent-bright);
+  border-color: var(--accent-bright);
+  color: #fff;
+}
+
+/* --- accessibility: reduced motion --------------------------------- */
+/* UI animations collapse to instant state changes; opacity crossfades  */
+/* become immediate. (The 3D canvas is the product surface and is       */
+/* driven separately.)                                                  */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

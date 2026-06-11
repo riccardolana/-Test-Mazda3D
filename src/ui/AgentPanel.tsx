@@ -89,19 +89,21 @@ export default function AgentPanel() {
     <div className={`panel ${visible ? "visible" : ""}`}>
       {/* agent bubble — the guide's current line */}
       {agentLine && (
-        <div className="agent-bubble">
-          <span className="agent-dot" />
+        <div className="agent-bubble" role="status" aria-live="polite">
+          <span className="agent-dot" aria-hidden="true" />
           <p>{agentLine}</p>
           <button
             type="button"
             className="mute"
             title={muted ? "Unmute agent voice" : "Mute agent voice"}
+            aria-label={muted ? "Unmute agent voice" : "Mute agent voice"}
+            aria-pressed={muted}
             onClick={() => {
               setVoiceMuted(!muted);
               setMuted(!muted);
             }}
           >
-            {muted ? "🔇" : "🔊"}
+            <span aria-hidden="true">{muted ? "🔇" : "🔊"}</span>
           </button>
         </div>
       )}
@@ -125,6 +127,8 @@ export default function AgentPanel() {
               <button
                 key={id}
                 title={PAINTS[id].name}
+                aria-label={PAINTS[id].name}
+                aria-pressed={config.color === id}
                 className={`swatch ${config.color === id ? "active" : ""}`}
                 style={{
                   background: `radial-gradient(circle at 32% 28%, ${PAINTS[id].sheen}, ${PAINTS[id].hex} 62%)`,
@@ -140,6 +144,7 @@ export default function AgentPanel() {
             {(Object.keys(INTERIOR_MATERIALS) as ("leather" | "cloth")[]).map((mId) => (
               <button
                 key={mId}
+                aria-pressed={config.interior.material === mId}
                 className={`chip ${config.interior.material === mId ? "active" : ""}`}
                 onClick={() =>
                   applyConfig(
@@ -155,6 +160,8 @@ export default function AgentPanel() {
               <button
                 key={id}
                 title={INTERIOR_COLORS[id].name}
+                aria-label={INTERIOR_COLORS[id].name}
+                aria-pressed={config.interior.color === id}
                 className={`swatch small ${config.interior.color === id ? "active" : ""}`}
                 style={{
                   background: `radial-gradient(circle at 32% 28%, ${INTERIOR_COLORS[id].sheen}, ${INTERIOR_COLORS[id].hex} 62%)`,
@@ -174,6 +181,7 @@ export default function AgentPanel() {
             {ENVIRONMENT_IDS.map((e) => (
               <button
                 key={e}
+                aria-pressed={config.environment === e}
                 className={`chip ${config.environment === e ? "active" : ""}`}
                 onClick={() => applyConfig({ environment: e }, `Scene → ${ENVIRONMENTS[e].name}`)}
               >
@@ -181,6 +189,7 @@ export default function AgentPanel() {
               </button>
             ))}
             <button
+              aria-pressed={config.driving}
               className={`chip drive ${config.driving ? "active" : ""}`}
               onClick={() =>
                 applyConfig(
@@ -189,7 +198,8 @@ export default function AgentPanel() {
                 )
               }
             >
-              {config.driving ? "■ Stop" : "▶ Drive"}
+              <span aria-hidden="true">{config.driving ? "■" : "▶"}</span>
+              {config.driving ? "Stop" : "Drive"}
             </button>
           </div>
 
@@ -197,6 +207,7 @@ export default function AgentPanel() {
             {VIEWS.map((v) => (
               <button
                 key={v.id}
+                aria-pressed={config.view === v.id}
                 className={`chip ${config.view === v.id ? "active" : ""}`}
                 onClick={() =>
                   applyConfig(
@@ -216,6 +227,8 @@ export default function AgentPanel() {
             {DOORS.map((d) => (
               <button
                 key={d.id}
+                aria-label={`${d.label} — ${config.doors[d.id] ? "open" : "closed"}`}
+                aria-pressed={config.doors[d.id]}
                 className={`chip door ${config.doors[d.id] ? "active" : ""}`}
                 onClick={() => toggleDoor(d.id)}
               >
@@ -240,8 +253,10 @@ export default function AgentPanel() {
           className={`mic ${listening ? "listening" : ""}`}
           onClick={toggleVoice}
           title="Voice input"
+          aria-label={listening ? "Stop listening" : "Start voice input"}
+          aria-pressed={listening}
         >
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
             <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z" />
           </svg>
         </button>
@@ -257,8 +272,8 @@ export default function AgentPanel() {
           }
           aria-label="Agent command"
         />
-        <button type="submit" className="send" disabled={!text.trim()}>
-          ↑
+        <button type="submit" className="send" disabled={!text.trim()} aria-label="Send command">
+          <span aria-hidden="true">↑</span>
         </button>
       </form>
     </div>

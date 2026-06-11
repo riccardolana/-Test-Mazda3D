@@ -16,17 +16,33 @@ export default function BookingModal() {
     if (open && capture) setSnapshot(capture());
   }, [open, capture]);
 
+  // standard dialog affordance: Escape closes
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setBooking(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, setBooking]);
+
   if (!open) return null;
 
   const openDoors = Object.values(config.doors).filter(Boolean).length;
 
   return (
     <div className="modal-backdrop" onClick={() => setBooking(false)}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="booking-title"
+        onClick={(e) => e.stopPropagation()}
+      >
         {snapshot && <img className="modal-snapshot" src={snapshot} alt="Your configured Mazda CX-5" />}
         {!booked ? (
           <>
-            <h2>Your test drive</h2>
+            <h2 id="booking-title">Your test drive</h2>
             <ul className="modal-summary">
               <li>
                 <span>Model</span>
@@ -60,8 +76,8 @@ export default function BookingModal() {
           </>
         ) : (
           <>
-            <div className="booked-check">✓</div>
-            <h2>You’re booked in</h2>
+            <div className="booked-check" aria-hidden="true">✓</div>
+            <h2 id="booking-title">You’re booked in</h2>
             <p className="booked-copy">
               Your {PAINTS[config.color].name} CX-5 will be waiting on Saturday at
               10:00, Mazda Studio Milano. See you there.

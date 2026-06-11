@@ -15,8 +15,8 @@ export default function IntentToast() {
 
   if (!lastIntent) return null;
   return (
-    <div className={`intent-toast ${visible ? "show" : ""}`}>
-      <span className="intent-check">✓</span> {lastIntent.text}
+    <div className={`intent-toast ${visible ? "show" : ""}`} role="status" aria-live="polite">
+      <span className="intent-check" aria-hidden="true">✓</span> {lastIntent.text}
     </div>
   );
 }
