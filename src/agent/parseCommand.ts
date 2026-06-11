@@ -1,5 +1,12 @@
-import type { ConfigPatch, DoorKey, PaintId, ViewName } from "../state/store";
-import { PAINTS } from "../state/palette";
+import type {
+  ConfigPatch,
+  DoorKey,
+  EnvironmentId,
+  InteriorColorId,
+  PaintId,
+  ViewName,
+} from "../state/store";
+import { ENVIRONMENTS, INTERIOR_COLORS, INTERIOR_MATERIALS, PAINTS } from "../state/palette";
 
 /* ------------------------------------------------------------------ */
 /* Stand-in for the future voice agent: lightweight keyword parsing    */
@@ -13,7 +20,7 @@ export interface ParsedCommand {
   /** human-readable confirmations, e.g. "Colour → Soul Red Crystal" */
   labels: string[];
   /** side effects that are actions rather than config: assembly restart, booking */
-  actions: ("assemble" | "book")[];
+  actions: ("assemble" | "book" | "drive" | "park")[];
 }
 
 const COLOR_WORDS: [RegExp, PaintId][] = [
@@ -33,6 +40,20 @@ const VIEW_WORDS: [RegExp, ViewName][] = [
   [/\b(rear|back|behind|tail)\b/, "rear"],
   [/\b(exterior|outside|overview|around|profile)\b/, "exterior"],
 ];
+
+const ENV_WORDS: [RegExp, EnvironmentId][] = [
+  [/\b(mountains?|alps|alpine|hik\w+|trails?|off-?road|forest|nature|camping?)\b/, "mountain"],
+  [/\b(city|urban|downtown|town|commut\w+|streets?|metropolis)\b/, "city"],
+  [/\b(coast(?:al)?(?:\s+road)?|beach|seaside|ocean\s+road|riviera|surf\w*)\b/, "coast"],
+  [/\b(studio|showroom)\b/, "studio"],
+];
+
+const INTERIOR_COLOR_WORDS: [string, InteriorColorId][] = [
+  ["black|charcoal|obsidian", "obsidian"],
+  ["tan|saddle|brown|cognac|caramel", "tan"],
+  ["greige|grey|gray|stone|beige|cream", "greige"],
+];
+const CABIN_CTX = "interior|cabin|inside|seats?|upholstery|leather|cloth|fabric";
 
 const DOOR_LABELS: Record<DoorKey, string> = {
   frontLeft: "Driver door",
@@ -77,6 +98,16 @@ export function parseCommand(text: string): ParsedCommand {
   if (/\b(book|reserve|schedule|test.?drive)\b/.test(s)) {
     actions.push("book");
     labels.push("Booking → test drive");
+    s = s.replace(/\btest.?drive\b/g, " ");
+  }
+  if (/\b(drive|driving|cruise|spin|roll|let'?s go)\b/.test(s) && !actions.includes("book")) {
+    actions.push("drive");
+    labels.push("Drive mode → on");
+    s = s.replace(/\b(drive|driving|cruise|spin|roll)\b/g, " ");
+  }
+  if (/\b(stop|park|pull over|stand still)\b/.test(s)) {
+    actions.push("park");
+    labels.push("Drive mode → off");
   }
 
   // --- doors: parse and consume the matched phrases so that door     --
@@ -105,6 +136,38 @@ export function parseCommand(text: string): ParsedCommand {
     );
     labels.push(`All doors → ${open ? "open" : "closed"}`);
     s = s.replace(/\b(open|close|shut)\s+everything\b/g, " ");
+  }
+
+  // --- environment ---------------------------------------------------
+  for (const [re, env] of ENV_WORDS) {
+    if (re.test(s)) {
+      patch.environment = env;
+      labels.push(`Scene → ${ENVIRONMENTS[env].name}`);
+      s = s.replace(re, " ");
+      break;
+    }
+  }
+
+  // --- interior ------------------------------------------------------
+  const interior: ConfigPatch["interior"] = {};
+  if (/\b(leather|nappa)\b/.test(s)) interior.material = "leather";
+  else if (/\b(cloth|fabric|textile|woven)\b/.test(s)) interior.material = "cloth";
+
+  for (const [words, id] of INTERIOR_COLOR_WORDS) {
+    const near = new RegExp(
+      `\\b(${words})\\b[\\w\\s,'-]{0,18}\\b(${CABIN_CTX})\\b|\\b(${CABIN_CTX})\\b[\\w\\s,'-]{0,18}\\b(${words})\\b`,
+    );
+    if (near.test(s)) {
+      interior.color = id;
+      s = s.replace(new RegExp(`\\b(${words})\\b`, "g"), " ");
+      break;
+    }
+  }
+  if (interior.material !== undefined || interior.color !== undefined) {
+    patch.interior = interior;
+    const mat = interior.material ? INTERIOR_MATERIALS[interior.material].name : null;
+    const col = interior.color ? INTERIOR_COLORS[interior.color].name : null;
+    labels.push(`Interior → ${[col, mat].filter(Boolean).join(" ")}`);
   }
 
   // --- colour ------------------------------------------------------
