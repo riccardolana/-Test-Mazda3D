@@ -1,6 +1,8 @@
 import { Suspense } from "react";
+import * as THREE from "three";
 import { Canvas } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
+import { EffectComposer, N8AO, Bloom, Vignette } from "@react-three/postprocessing";
 import CarModel from "./CarModel";
 import CameraRig from "./CameraRig";
 import EnvironmentStage from "./EnvironmentStage";
@@ -12,9 +14,15 @@ export default function Experience() {
 
   return (
     <Canvas
-      dpr={[1, 2]}
+      dpr={[1, 1.75]}
+      shadows
       camera={{ position: [8.5, 3.2, 10.5], fov: 38, near: 0.05, far: 250 }}
-      gl={{ antialias: true, preserveDrawingBuffer: true }}
+      gl={{
+        antialias: false,
+        preserveDrawingBuffer: true,
+        toneMapping: THREE.NeutralToneMapping,
+        toneMappingExposure: 1.0,
+      }}
       onCreated={(state) => {
         setCapture(() => state.gl.domElement.toDataURL("image/jpeg", 0.85));
         if (import.meta.env.DEV) {
@@ -25,7 +33,20 @@ export default function Experience() {
       style={{ position: "absolute", inset: 0 }}
     >
       <ambientLight intensity={0.25} />
-      <directionalLight position={[5, 9, 4]} intensity={1.1} />
+      <directionalLight
+        position={[5, 9, 4]}
+        intensity={1.1}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-bias={-0.0002}
+        shadow-normalBias={0.02}
+        shadow-camera-near={1}
+        shadow-camera-far={30}
+        shadow-camera-left={-7}
+        shadow-camera-right={7}
+        shadow-camera-top={7}
+        shadow-camera-bottom={-7}
+      />
       <directionalLight position={[-6, 5, -6]} intensity={0.4} color="#bcd0ff" />
 
       <EnvironmentStage />
@@ -44,6 +65,12 @@ export default function Experience() {
           color="#000000"
         />
       </Suspense>
+
+      <EffectComposer multisampling={4}>
+        <N8AO aoRadius={0.35} intensity={2.5} distanceFalloff={1} quality="medium" halfRes />
+        <Bloom mipmapBlur intensity={0.12} luminanceThreshold={1.1} />
+        <Vignette eskil={false} offset={0.18} darkness={0.5} />
+      </EffectComposer>
     </Canvas>
   );
 }
