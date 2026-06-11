@@ -48,7 +48,8 @@ window.mazdaAgent.apply(patch) ────────────────�
 | `src/scene/rigCar.ts` | load-time discovery: orientation, door hinge pivots, wheel axles, camera presets, paint material swap, normalization wrapper |
 | `src/scene/CarModel.tsx` | per-frame animation (maath damps): paint color, door angles, assembly staged→home |
 | `src/scene/CameraRig.tsx` | drei `CameraControls`: animated presets, portrait aspect compensation, interior FOV widening, idle turntable |
-| `src/scene/Experience.tsx` | Canvas, shadows + Neutral tone mapping + N8AO/bloom/vignette composer, ContactShadows, dev `window.__three` handle. All HDRIs are LOCAL files in `public/hdri/` (no *network* HDRIs — keeps demo offline-safe) |
+| `src/scene/Experience.tsx` | Canvas, shadows + N8AO/bloom/tone-mapping/vignette composer, ContactShadows, dev `window.__three` handle. Tone mapping is per-environment (ACES_FILMIC in studio, NEUTRAL in HDRI locations) and MUST live inside the composer as a `<ToneMapping>` effect — the EffectComposer forces `gl.toneMapping = NoToneMapping`, so renderer-level tone mapping silently does nothing. Studio is lit by a procedural Lightformer rig; location HDRIs are LOCAL files in `public/hdri/` (no *network* HDRIs — keeps demo offline-safe) |
+| `src/agent/voice.ts` | agent speech: Gemini TTS REST (`gemini-2.5-flash-preview-tts`, voice Sulafat, key in `.env.local` as `VITE_GEMINI_API_KEY`) with Web Speech fallback on missing key or any fetch/decode error — demo still talks offline |
 | `src/ui/*` | TopBar, IntroOverlay (+assembly captions), AgentPanel, IntentToast, BookingModal |
 
 ## The GLB and its trap
