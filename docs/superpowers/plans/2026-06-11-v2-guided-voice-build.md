@@ -10,6 +10,8 @@
 
 **V2 versioning:** all work happens on a new `v2` git branch (v1 stays on `main` / https://test-mazda3d.vercel.app). V2 deploys to a **separate Vercel project** `test-mazda3d-v2` so both apps are publicly comparable side-by-side.
 
+**Execution status (2026-06-11):** the `v2` branch exists and **Tasks 1 and 2 are DONE** — all HDRIs and textures are downloaded, verified, and committed (`a4e562f`, `8bb63ed`). Task 0 Step 1 (branch) is also done. **Cowork scope: Task 0 Steps 2–5, then Tasks 3–12, in order.** STOP after Task 12 — Task 13 (browser/WebGL verification) and Task 14 (Vercel deploy) run in Claude Code on Riccardo's machine, not in Cowork. Work only on the `v2` branch; commit per task as specified.
+
 ---
 
 ## File structure
@@ -46,14 +48,7 @@
 **Files:**
 - Modify: `package.json`
 
-- [ ] **Step 1: Create the v2 branch**
-
-```bash
-cd "/Users/riccardo.lana/Projects/Madza/3d Experience"
-git checkout -b v2
-```
-
-(If executing in a worktree per `superpowers:using-git-worktrees`, create the worktree from `main` with branch name `v2`.)
+- [x] **Step 1: Create the v2 branch** — DONE (branch `v2` exists; make sure you're on it: `git checkout v2`)
 
 - [ ] **Step 2: Install vitest**
 
@@ -96,7 +91,7 @@ git commit -m "chore: v2 branch, add vitest"
 
 ---
 
-### Task 1: Download HDRI environment backdrops (Poly Haven, CC0)
+### Task 1: Download HDRI environment backdrops (Poly Haven, CC0) — ✅ DONE (commit `a4e562f`)
 
 **Files:**
 - Create: `public/hdri/mountain_2k.hdr`
@@ -113,7 +108,7 @@ All three are CC0 from Poly Haven and were verified live (HTTP 200) with these s
 
 (Verified alternates if any looks wrong in the browser check: `alps_field`, `wide_street_01`, `spiaggia_di_mondello` — same URL pattern.)
 
-- [ ] **Step 1: Download into `public/hdri/`**
+- [x] **Step 1: Download into `public/hdri/`**
 
 ```bash
 cd "/Users/riccardo.lana/Projects/Madza/3d Experience"
@@ -126,12 +121,12 @@ curl -L --retry 3 -o public/hdri/coast_2k.hdr \
   "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/simons_town_road_2k.hdr"
 ```
 
-- [ ] **Step 2: Verify**
+- [x] **Step 2: Verify**
 
 Run: `ls -la public/hdri/ && file public/hdri/*.hdr`
 Expected: three files, 5–7 MB each, `file` reports `Radiance HDR image data`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add public/hdri
@@ -140,7 +135,7 @@ git commit -m "feat: add CC0 HDRI environment backdrops (Poly Haven)"
 
 ---
 
-### Task 2: Download ground + fabric textures (ambientCG, CC0)
+### Task 2: Download ground + fabric textures (ambientCG, CC0) — ✅ DONE (commit `8bb63ed`)
 
 **Files:**
 - Create: `public/textures/gravel_color.jpg`, `public/textures/gravel_normal.jpg`
@@ -149,7 +144,7 @@ git commit -m "feat: add CC0 HDRI environment backdrops (Poly Haven)"
 
 All three assets are CC0 from ambientCG; direct-download URLs were verified to return `200 application/zip`.
 
-- [ ] **Step 1: Download and extract**
+- [x] **Step 1: Download and extract**
 
 ```bash
 cd "/Users/riccardo.lana/Projects/Madza/3d Experience"
@@ -169,12 +164,12 @@ cp /tmp/acg/fabric/Fabric030_1K-JPG_NormalGL.jpg     public/textures/fabric_norm
 
 If a `cp` fails because the inner filename differs, run `ls /tmp/acg/<dir>` and copy the `_Color.jpg` / `_NormalGL.jpg` variants (always use **NormalGL**, not NormalDX — three.js expects OpenGL-convention normals).
 
-- [ ] **Step 2: Verify sizes**
+- [x] **Step 2: Verify sizes**
 
 Run: `ls -la public/textures/`
 Expected: 5 JPGs, each roughly 0.2–1.5 MB.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add public/textures
