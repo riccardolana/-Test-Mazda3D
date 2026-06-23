@@ -35,7 +35,15 @@ export default function Experience() {
         toneMappingExposure: 1.0,
       }}
       onCreated={(state) => {
-        setCapture(() => state.gl.domElement.toDataURL("image/jpeg", 0.85));
+        setCapture(() => {
+          const cinematic = document.querySelector<HTMLCanvasElement>(
+            "canvas[data-cinematic-canvas='true']",
+          );
+          if (cinematic && cinematic.dataset.cinematicVariant) {
+            return cinematic.toDataURL("image/jpeg", 0.9);
+          }
+          return state.gl.domElement.toDataURL("image/jpeg", 0.85);
+        });
         if (import.meta.env.DEV) {
           (window as any).__three = state;
           console.log("[studio] canvas created");

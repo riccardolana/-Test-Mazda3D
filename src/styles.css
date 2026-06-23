@@ -563,6 +563,102 @@ input:focus-visible {
   margin-right: 4px;
 }
 
+/* ---------------- cinematic interior layer ---------------- */
+
+.cinematic-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: #07070a;
+  opacity: 0;
+  pointer-events: auto;
+  animation: cinematicIn 0.68s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  touch-action: none;
+}
+
+.cinematic-layer.ready {
+  opacity: 1;
+}
+
+.cinematic-layer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(circle at 52% 48%, transparent 0 38%, rgba(5, 5, 8, 0.2) 68%),
+    linear-gradient(rgba(5, 5, 8, 0.08), rgba(5, 5, 8, 0.24));
+  pointer-events: none;
+}
+
+.cinematic-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  transform: scale(1.012);
+  filter: saturate(1.04) contrast(1.03);
+}
+
+.cinematic-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.44), transparent 28%, transparent 72%, rgba(0, 0, 0, 0.42)),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.28), transparent 26%, transparent 72%, rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+}
+
+.cinematic-badge {
+  position: absolute;
+  left: 22px;
+  bottom: calc(env(safe-area-inset-bottom) + 148px);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  max-width: min(360px, calc(100% - 44px));
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 8px;
+  background: rgba(9, 9, 12, 0.62);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: rgba(244, 244, 246, 0.82);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.cinematic-badge span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cinematic-badge i {
+  flex: none;
+  font-style: normal;
+  color: rgba(244, 244, 246, 0.48);
+}
+
+@keyframes cinematicIn {
+  from {
+    opacity: 0;
+    transform: scale(1.045);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
 /* ---------------- booking modal ---------------- */
 
 .modal-backdrop {
